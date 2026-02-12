@@ -48,10 +48,8 @@ function buildWhereClause(params: QueryParams) {
     const nextDate = new Date(targetDate)
     nextDate.setDate(nextDate.getDate() + 1)
     conditions.push(
-      and(
-        gte(newsItems.publishedAt, targetDate),
-        sql`${newsItems.publishedAt} < ${nextDate}`
-      )
+      gte(newsItems.publishedAt, targetDate),
+      sql`${newsItems.publishedAt} < ${nextDate}`
     )
   }
 
@@ -77,7 +75,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(params.offset) || 0
 
     // Build where clause
-    const whereClause = buildWhereClause(params) || undefined
+    const whereClause = buildWhereClause(params)
 
     // Query database
     const items = await db
