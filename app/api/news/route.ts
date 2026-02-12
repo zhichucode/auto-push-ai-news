@@ -24,8 +24,8 @@ function parseQueryParams(request: NextRequest): QueryParams {
     source: searchParams.get('source') || undefined,
     date: searchParams.get('date') || undefined,
     search: searchParams.get('search') || undefined,
-    limit: searchParams.get('limit') || '20',
-    offset: searchParams.get('offset') || '0',
+    limit: parseInt(searchParams.get('limit') || '20') || 20,
+    offset: parseInt(searchParams.get('offset') || '0') || 0,
   }
 }
 
