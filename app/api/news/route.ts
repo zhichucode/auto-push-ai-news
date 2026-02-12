@@ -17,6 +17,13 @@ interface QueryParams {
   offset?: string
 }
 
+// Helper function to safely parse number from URL search params
+function parseNumericParam(value: string | null, defaultValue: number): number {
+  if (!value) return defaultValue
+  const parsed = parseInt(value)
+  return isNaN(parsed) ? defaultValue : parsed
+}
+
 function parseQueryParams(request: NextRequest): QueryParams {
   const { searchParams } = new URL(request.url)
   return {
@@ -24,8 +31,8 @@ function parseQueryParams(request: NextRequest): QueryParams {
     source: searchParams.get('source') || undefined,
     date: searchParams.get('date') || undefined,
     search: searchParams.get('search') || undefined,
-    limit: parseInt(searchParams.get('limit') || '20') || 20,
-    offset: parseInt(searchParams.get('offset') || '0') || 0,
+    limit: parseNumericParam(searchParams.get('limit'), 20),
+    offset: parseNumericParam(searchParams.get('offset'), 0),
   }
 }
 
@@ -71,11 +78,11 @@ function buildWhereClause(params: QueryParams) {
 export async function GET(request: NextRequest) {
   try {
     const params = parseQueryParams(request)
-    const limit = Math.min(parseInt(params.limit) || 20, 100)
-    const offset = parseInt(params.offset) || 0
+    const limit = parseNumericParam(params.limit, 20)
+    const offset = parseNumericParam(params.offset, 0)
 
     // Build where clause
-    const whereClause = buildWhereClause(params)
+    const whereClause = buildWhereClause(params) || undefined
 
     // Query database
     const items = await db
