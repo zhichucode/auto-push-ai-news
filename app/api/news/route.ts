@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(params.offset) || 0
 
     // Build where clause
-    const whereClause = buildWhereClause(params)
+    const whereClause = buildWhereClause(params) || undefined
 
     // Query database
     const items = await db
